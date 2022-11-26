@@ -82,3 +82,10 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+/* Custom */
+
+.navbar {
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+}

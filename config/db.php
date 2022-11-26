@@ -2,9 +2,9 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=yii2basic',
-    'username' => 'root',
-    'password' => '',
+    'dsn' => 'postgres://dyucycuy:zzDVxvni064qQtyVJ4-Cj-zjqt8SNbWP@babar.db.elephantsql.com/dyucycuy',
+    'username' => 'dyucycuy',
+    'password' => 'zzDVxvni064qQtyVJ4-Cj-zjqt8SNbWP',
     'charset' => 'utf8',
 
     // Schema cache options (for production environment)

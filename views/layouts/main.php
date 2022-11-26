@@ -12,6 +12,8 @@ use yii\bootstrap5\NavBar;
 
 AppAsset::register($this);
 
+$sess = Yii::$app->session;
+
 $this->registerCsrfMetaTags();
 $this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
 $this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1, shrink-to-fit=no']);
@@ -29,23 +31,27 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 <body class="d-flex flex-column h-100">
 <?php $this->beginBody() ?>
 
+<?php if ($sess->has('id')) { ?>
+
 <header id="header">
     <?php
     NavBar::begin([
         'brandLabel' => Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
-        'options' => ['class' => 'navbar-expand-md navbar-dark bg-primary fixed-top']
+        'brandOptions' => ['class' => 'fs-2 fw-bold'],
+        'innerContainerOptions' => ['class' => 'container'],
+        'options' => ['class' => 'navbar-expand-md navbar-dark bg-primary shadow fixed-top fs-5', 'style' => 'background-color: #5260F4 !important'],
     ]);
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav'],
+        'options' => ['class' => 'navbar-nav ms-auto'],
         'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
+            ['label' => 'Home', 'url' => ['/user/index']],
+            ['label' => 'About', 'url' => ['/user/about']],
+            ['label' => 'Contact', 'url' => ['/user/contact']],
             Yii::$app->user->isGuest
-                ? ['label' => 'Login', 'url' => ['/site/login']]
+                ? ['label' => 'Login', 'url' => ['/user/login']]
                 : '<li class="nav-item">'
-                    . Html::beginForm(['/site/logout'])
+                    . Html::beginForm(['/user/logout'])
                     . Html::submitButton(
                         'Logout (' . Yii::$app->user->identity->username . ')',
                         ['class' => 'nav-link btn btn-link logout']
@@ -58,23 +64,35 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     ?>
 </header>
 
+<?php } ?>
+
 <main id="main" class="flex-shrink-0" role="main">
-    <div class="container">
+    <?php if (!Yii::$app->user->isGuest) { ?>
+
+    <div class="container mt-5">
         <?php if (!empty($this->params['breadcrumbs'])): ?>
             <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
         <?php endif ?>
         <?= Alert::widget() ?>
         <?= $content ?>
     </div>
+
+    <?php } else { ?>
+
+    <div class="d-flex align-items-center justify-content-center h-100">
+        <?= $content ?>
+    </div>
+
+    <?php } ?>
 </main>
 
-<footer id="footer" class="mt-auto py-3 bg-light">
+<!-- <footer id="footer" class="mt-auto py-3 bg-light">
     <div class="container">
         <div class="row text-muted">
-            <div class="col-md-6 text-center text-md-start">&copy; Jobit <?= date('Y') ?></div>
+            <div class="col-md-12 text-center">&copy; Jobit <?= date('Y') ?></div>
         </div>
     </div>
-</footer>
+</footer> -->
 
 <?php $this->endBody() ?>
 </body>
