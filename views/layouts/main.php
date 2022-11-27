@@ -9,11 +9,58 @@ use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
+use yii\helpers\Url;
 
-AppAsset::register($this);
-
+// Construct
+$currentRoute = Yii::$app->request->url;
 $sess = Yii::$app->session;
 
+$optionsArr = [
+    'userType' => '',
+    'navItemLabel' => 'undefined',
+    'navItemUrl' => '/',
+    'profileName' => 'undefined'
+];
+
+$noSessionRoutes = [
+    '/user/login',
+    '/user/register',
+    '/company/login',
+    '/company/register',
+];
+
+if (!$sess->has('id')) {
+    if (!in_array($currentRoute, $noSessionRoutes)) {
+        Yii::$app->response->redirect(Url::toRoute('/user/login'));
+    }
+} else {
+    if (in_array($currentRoute, $noSessionRoutes)) {
+        Yii::$app->response->redirect(Url::toRoute('/'));
+    } else {
+        if ($sess->has('cpf')) {
+            $optionsArr = [
+                'userType' => 'user',
+                'navItemLabel' => '<i class="fa-solid fa-hourglass-end"></i> Candidaturas',
+                'navItemUrl' => '/user/candidaturas',
+                'profileName' => '<i class="fa-solid fa-user"></i> ' . $sess->get('nome'),
+                'vagas' => []
+            ];
+        } else if ($sess->has('cnpj')) {
+            $optionsArr = [
+                'userType' => 'company',
+                'navItemLabel' => '<i class="fa-solid fa-plus"></i> Cadastrar vaga',
+                'navItemUrl' => '/company/registrar-vaga',
+                'profileName' => '<i class="fa-solid fa-building"></i> ' . $sess->get('razao_social'),
+                'vagas' => []
+            ];
+        } else {
+            Yii::$app->response->redirect(Url::toRoute('/site/error'));
+        }
+    }
+}
+
+// Start
+AppAsset::register($this);
 $this->registerCsrfMetaTags();
 $this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
 $this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1, shrink-to-fit=no']);
@@ -43,32 +90,22 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         'options' => ['class' => 'navbar-expand-md navbar-dark bg-primary shadow fixed-top fs-5', 'style' => 'background-color: #5260F4 !important'],
     ]);
     echo Nav::widget([
+        'encodeLabels' => false,
         'options' => ['class' => 'navbar-nav ms-auto'],
         'items' => [
-            ['label' => 'Home', 'url' => ['/user/index']],
-            ['label' => 'About', 'url' => ['/user/about']],
-            ['label' => 'Contact', 'url' => ['/user/contact']],
-            Yii::$app->user->isGuest
-                ? ['label' => 'Login', 'url' => ['/user/login']]
-                : '<li class="nav-item">'
-                    . Html::beginForm(['/user/logout'])
-                    . Html::submitButton(
-                        'Logout (' . Yii::$app->user->identity->username . ')',
-                        ['class' => 'nav-link btn btn-link logout']
-                    )
-                    . Html::endForm()
-                    . '</li>'
+            ['label' => '<i class="fa-solid fa-house"></i> Home', 'url' => ['/site/home']],
+            ['label' => $optionsArr['navItemLabel'], 'url' => [$optionsArr['navItemUrl']]],
+            ['label' => $optionsArr['profileName'], 'items' => [
+                ['label' => 'Perfil', 'url' => '#'],
+                ['label' => 'Logout', 'url' => ['/site/deslogar']]
+            ]]
         ]
     ]);
     NavBar::end();
     ?>
 </header>
 
-<?php } ?>
-
 <main id="main" class="flex-shrink-0" role="main">
-    <?php if (!Yii::$app->user->isGuest) { ?>
-
     <div class="container mt-5">
         <?php if (!empty($this->params['breadcrumbs'])): ?>
             <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]) ?>
@@ -76,23 +113,17 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         <?= Alert::widget() ?>
         <?= $content ?>
     </div>
+</main>
 
-    <?php } else { ?>
+<?php } else { ?>
 
+<main id="main" class="flex-shrink-0" role="main">
     <div class="d-flex align-items-center justify-content-center h-100">
         <?= $content ?>
     </div>
-
-    <?php } ?>
 </main>
 
-<!-- <footer id="footer" class="mt-auto py-3 bg-light">
-    <div class="container">
-        <div class="row text-muted">
-            <div class="col-md-12 text-center">&copy; Jobit <?= date('Y') ?></div>
-        </div>
-    </div>
-</footer> -->
+<?php } ?>
 
 <?php $this->endBody() ?>
 </body>

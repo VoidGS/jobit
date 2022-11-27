@@ -3,15 +3,12 @@
 namespace app\controllers;
 
 use Yii;
-use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\web\Response;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
-use app\models\UserLoginForm;
-use app\models\UserRegisterForm;
-use app\models\ContactForm;
+use yii\helpers\Url;
 
-class UserController extends Controller {
+class SiteController extends Controller {
     /**
      * {@inheritdoc}
      */
@@ -53,38 +50,24 @@ class UserController extends Controller {
     }
 
     /**
-     * Login action.
+     * Displays homepage.
      *
-     * @return Response|string
+     * @return string
      */
-    public function actionLogin() {
-        $model = new UserLoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
-
-        $model->password = '';
-
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+    public function actionHome() {
+        return $this->render('home');
     }
 
-    /**
-     * Register action.
-     *
-     * @return Response|string
-     */
-    public function actionRegister() {
-        $model = new UserRegisterForm();
-        if ($model->load(Yii::$app->request->post()) && $model->register()) {
-            return $this->goBack();
-        }
+    public function actionDeslogar() {
+        $sess = Yii::$app->session;
 
-        $model->password = '';
+        $rota = $sess->has('cpf') ? 'user/login' : ($sess->has('cnpj') ? 'company/login' : '/');
 
-        return $this->render('register', [
-            'model' => $model,
-        ]);
+        $sess->removeAll();
+        $sess->close();
+
+        return Yii::$app->response->redirect(Url::toRoute($rota));
     }
 }
+
+?>

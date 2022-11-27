@@ -18,38 +18,43 @@ $this->title = 'Login de usuário';
                     <img src="<?= Url::to('@web/img/draw2.svg') ?>" class="img-fluid" alt="Phone image">
                 </div>
                 <div class="col-md-6 col-lg-5 col-xl-5 offset-xl-1">
-                    <h1 class="fw-bold" style="color: #5260F4;"><?= Yii::$app->name ?></h1>
-                    <h2 class="mb-2 font-alt"><?= Html::encode($this->title) ?></h2>
+                    <div class="row">
+                        <h1 class="fw-bold" style="color: #5260F4;"><?= Yii::$app->name ?></h1>
+                        <h2 class="mb-2 font-alt"><?= Html::encode($this->title) ?></h2>
+    
+                        <?php $form = ActiveForm::begin([
+                            'id' => 'login-form',
+                        ]); ?>
 
-                    <?php $form = ActiveForm::begin([
-                        'id' => 'login-form',
-                        'fieldConfig' => [
-                            'template' => "{label}\n{input}\n{error}",
-                            'labelOptions' => ['class' => 'col-form-label'],
-                            'inputOptions' => ['class' => 'form-control form-control-lg'],
-                            'errorOptions' => ['class' => 'invalid-feedback'],
-                        ],
-                        'options' => ['class' => '']
-                    ]); ?>
-
-                        <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
-
-                        <?= $form->field($model, 'password')->passwordInput() ?>
-
-                        <div class="form-group">
-                            <div class="col-lg-12 d-flex justify-content-between">
-                                <?= Html::submitButton('<i class="fa-solid fa-user"></i>  Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-                                <button class="btn btn-secondary"><i class="fa-solid fa-building"></i>  Painel da empresa</button>
+                            <div class="row mb-2">
+                                <div class="col-md-12">
+                                <?= $form->field($model, 'email')->input('email', ['autofocus' => true]) ?>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <div class="col-lg-12 mt-3 text-muted">
-                                <span>Não tem uma conta? <a href="<?= Url::toRoute('user/register') ?>" style="text-decoration: none;">Registre-se <i class="fa-solid fa-arrow-right"></i></a></span>
+                            <div class="row mb-2">
+                                <div class="col-md-12">
+                                    <?= $form->field($model, 'password')->passwordInput() ?>
+                                </div>
                             </div>
-                        </div>
-
-                    <?php ActiveForm::end(); ?>
+    
+                            <div class="row mt-3 mb-5">
+                                <div class="form-group">
+                                    <div class="col-lg-12 d-flex justify-content-between">
+                                        <?= Html::submitButton('<i class="fa-solid fa-user"></i>  Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+                                        <a href="<?= Url::toRoute('company/login') ?>" class="btn btn-secondary"><i class="fa-solid fa-building"></i>  Painel da empresa</a>
+                                    </div>
+                                </div>
+        
+                                <div class="form-group">
+                                    <div class="col-lg-12 mt-3 text-muted">
+                                        <span>Não tem uma conta? <a href="<?= Url::toRoute('user/register') ?>" style="text-decoration: none;">Registre-se <i class="fa-solid fa-arrow-right"></i></a></span>
+                                    </div>
+                                </div>                                
+                            </div>
+    
+                        <?php ActiveForm::end(); ?>
+                    </div>
                 </div>
             </div>
         </div>

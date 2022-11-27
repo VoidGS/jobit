@@ -4,10 +4,13 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
-use app\models\User;
+use app\models\Company;
+use DateTime;
 
-class UserLoginForm extends Model
-{
+class CompanyRegisterForm extends Model {
+    public $razaoSocial;
+    public $cnpj;
+    public $qntFuncionarios;
     public $email;
     public $password;
 
@@ -15,7 +18,7 @@ class UserLoginForm extends Model
     private $arrPost;
 
     public function __construct($config = []) {
-        $this->model = new User();
+        $this->model = new Company();
         $this->arrPost = Yii::$app->request->post();
 
         parent::__construct($config);
@@ -24,10 +27,15 @@ class UserLoginForm extends Model
     /**
      * @return array the validation rules.
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['email', 'password'], 'required'],
+            ['razaoSocial', 'required', 'message' => ''],
+            ['cnpj', 'required', 'message' => ''],
+            ['qntFuncionarios', 'required', 'message' => ''],
+            ['email', 'required', 'message' => ''],
+            ['password', 'required', 'message' => ''],
+
+            ['cnpj', 'validateCnpj'],
             ['email', 'validateEmail'],
             ['password', 'validatePassword'],
         ];
@@ -35,13 +43,11 @@ class UserLoginForm extends Model
 
     /**
      * Validates the password.
-     * This method serves as the inline validation for password.
      *
      * @param string $attribute the attribute currently being validated
      * @param array $params the additional name-value pairs given in the rule
      */
-    public function validatePassword($attribute, $params)
-    {
+    public function validatePassword($attribute, $params) {
         if (!$this->hasErrors()) {
             $pattern = "/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/";
             $regex = preg_match($pattern, $this->password);
@@ -53,6 +59,18 @@ class UserLoginForm extends Model
     }
 
     /**
+     * Validates the CNPJ.
+     *
+     * @param string $attribute the attribute currently being validated
+     * @param array $params the additional name-value pairs given in the rule
+     */
+    public function validateCnpj($attribute, $params) {
+        if (!$this->hasErrors()) {
+            
+        }
+    }
+
+    /**
      * Validates the email.
      *
      * @param string $attribute the attribute currently being validated
@@ -60,21 +78,17 @@ class UserLoginForm extends Model
      */
     public function validateEmail($attribute, $params) {
         if (!$this->hasErrors()) {
-            if ($this->model->findByEmail($this->email) != $this->email) {
-                $this->addError($attribute, 'Não existe uma conta com este email.');
+            if ($this->model->findByEmail($this->email) == $this->email) {
+                $this->addError($attribute, 'Email já cadastrado.');
             }
         }
     }
 
-    /**
-     * Logs in a user using the provided username and password.
-     * @return bool whether the user is logged in successfully
-     */
-    public function login()
-    {
+    public function register() {
         if ($this->validate()) {
-            return $this->model->login($this->email, md5($this->password));
+            return $this->model->register($this->razaoSocial, $this->cnpj, $this->qntFuncionarios, $this->email, md5($this->password));
         }
+
         return false;
     }
 }

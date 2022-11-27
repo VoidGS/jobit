@@ -4,9 +4,9 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
-use app\models\User;
+use app\models\Company;
 
-class UserLoginForm extends Model
+class CompanyLoginForm extends Model
 {
     public $email;
     public $password;
@@ -15,7 +15,7 @@ class UserLoginForm extends Model
     private $arrPost;
 
     public function __construct($config = []) {
-        $this->model = new User();
+        $this->model = new Company();
         $this->arrPost = Yii::$app->request->post();
 
         parent::__construct($config);

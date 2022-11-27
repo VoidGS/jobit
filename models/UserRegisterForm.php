@@ -139,15 +139,17 @@ class UserRegisterForm extends Model {
      */
     public function validatePretencao($attribute, $params) {
         if (!$this->hasErrors()) {
-
+            if ($this->pretencaoSalarial < 1000 || $this->pretencaoSalarial > 100000) {
+                $this->addError($attribute, 'Pretenção inválida.');
+            }
         }
     }
 
     public function register() {
         if ($this->validate()) {
-            print_r($this->arrPost);
-
-            // return $this->teste->register();
+            $this->stacks = json_encode($this->stacks);
+            
+            return $this->model->register($this->nome, $this->cpf, $this->dataNasc, $this->email, $this->pretencaoSalarial, $this->areaAtuacao, $this->stacks, $this->tempoExp, md5($this->password));
         }
 
         return false;

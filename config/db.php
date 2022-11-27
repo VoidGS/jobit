@@ -2,7 +2,7 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'postgres://dyucycuy:zzDVxvni064qQtyVJ4-Cj-zjqt8SNbWP@babar.db.elephantsql.com/dyucycuy',
+    'dsn' => 'pgsql:host=babar.db.elephantsql.com;port=5432;dbname=dyucycuy',
     'username' => 'dyucycuy',
     'password' => 'zzDVxvni064qQtyVJ4-Cj-zjqt8SNbWP',
     'charset' => 'utf8',

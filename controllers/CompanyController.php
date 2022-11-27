@@ -7,11 +7,12 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
-use app\models\UserLoginForm;
-use app\models\UserRegisterForm;
+use app\models\CompanyLoginForm;
+use app\models\CompanyRegisterForm;
 use app\models\ContactForm;
 
-class UserController extends Controller {
+class CompanyController extends Controller
+{
     /**
      * {@inheritdoc}
      */
@@ -58,7 +59,7 @@ class UserController extends Controller {
      * @return Response|string
      */
     public function actionLogin() {
-        $model = new UserLoginForm();
+        $model = new CompanyLoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         }
@@ -76,7 +77,7 @@ class UserController extends Controller {
      * @return Response|string
      */
     public function actionRegister() {
-        $model = new UserRegisterForm();
+        $model = new CompanyRegisterForm();
         if ($model->load(Yii::$app->request->post()) && $model->register()) {
             return $this->goBack();
         }

@@ -112,7 +112,7 @@ $this->title = 'Registro de usuário';
                                 <div class="form-group">
                                     <div class="col-lg-12 d-flex justify-content-between">
                                         <?= Html::submitButton('<i class="fa-solid fa-id-badge"></i>  Registre-se', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-                                        <button class="btn btn-secondary"><i class="fa-solid fa-building"></i>  Painel da empresa</button>
+                                        <a href="<?= Url::toRoute('company/login') ?>" class="btn btn-secondary"><i class="fa-solid fa-building"></i>  Painel da empresa</a>
                                     </div>
                                 </div>
         
