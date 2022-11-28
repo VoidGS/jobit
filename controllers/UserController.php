@@ -10,6 +10,7 @@ use yii\filters\VerbFilter;
 use app\models\UserLoginForm;
 use app\models\UserRegisterForm;
 use app\models\ContactForm;
+use app\models\Job;
 
 class UserController extends Controller {
     /**
@@ -86,5 +87,17 @@ class UserController extends Controller {
         return $this->render('register', [
             'model' => $model,
         ]);
+    }
+
+    public function actionApply($jobId) {
+        $model = new Job();
+        $model->apply($jobId);
+    }
+
+    public function actionCandidaturas() {
+       $model = new Job();
+       return $this->render('applications', [
+        'model' => $model
+       ]);
     }
 }

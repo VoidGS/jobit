@@ -16,26 +16,25 @@ $formatter = Yii::$app->formatter;
 
     <div class="row">
         <div class="col-md-12 mt-5 text-center">
-            <h1 class="fs-1 fw-bold">Vagas para você</h1>
-            <h4 class="fw-bold text-muted">Sempre buscando as melhores oportunidades</h4>
+            <h1 class="fs-1 fw-bold">Suas candidaturas</h1>
+            <h4 class="fw-bold text-muted">Fique de olho na caixa de entrada do seu email</h4>
         </div>
     </div>
 
     <div class="row">
         <?php
         if ($sess->has('cpf')) {
-            $vagas = $jobModel->findJobs();
-            $vagasFiltered = $jobModel->filterJobsByPercent($vagas);
+            $vagas = $jobModel->findApplications();
 
-            if (count($vagasFiltered) < 1) {
+            if (count($vagas) < 1) {
             ?>
                 <div class="col-md-12 mt-5">
-                    <h1 class="fw-bold text-center"><i class="fa-regular fa-clock"></i> Nenhuma vaga até o momento</h1>
+                    <h1 class="fw-bold text-center"><i class="fa-regular fa-clock"></i> Nenhuma candidatura até o momento</h1>
                 </div>
             <?php
             }
 
-            foreach ($vagasFiltered as $vaga) {
+            foreach ($vagas as $vaga) {
                 $remoto = $vaga['remoto'] == 1 ? 'Remoto' : 'Presencial';
                 $tipoContrato = $vaga['tipo_contrato'] == 1 ? 'CLT' : 'PJ';
                 switch ($vaga['tempo_exp']) {
@@ -58,6 +57,24 @@ $formatter = Yii::$app->formatter;
                     default:
                         break;
                 }
+
+                switch ($vaga['status']) {
+                    case '1':
+                        $textStatusApplication = 'Candidatura pendente';
+                        $classStatusApplication = 'secondary';
+                        break;
+                    
+                    case '2':
+                        $textStatusApplication = 'Candidatura rejeitada';
+                        $classStatusApplication = 'danger';
+                        break;
+                    
+                    case '3':
+                        $textStatusApplication = 'Candidatura aceita';
+                        $classStatusApplication = 'success';
+                        break;
+                    
+                }
         ?>
                 <div class="col-lg-4 col-md-6 col-sm-12 mt-5">
                     <div class="card p-3 text-white shadow-lg" style="background-color: #292841; border-radius: 15px;">
@@ -77,40 +94,13 @@ $formatter = Yii::$app->formatter;
 
                         <div class="row mt-2">
                             <div class="col-md-12">
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#applyModal" data-bs-idjob="<?= $vaga['id'] ?>" data-bs-titlejob="<?= $vaga['titulo'] ?>"><i class="fa-solid fa-building"></i>  Candidatar-se</button>
+                                <h5 class=""><span class="badge bg-<?= $classStatusApplication ?>"><?= $textStatusApplication ?></span></h5>
                             </div>
                         </div>
                     </div>
                 </div>
         <?php
             }
-        ?>
-            
-            <div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            Candidatura
-                        </div>
-
-                        <div class="modal-body p-4">
-                            <h5>Quer se candidatar para <b id="vagaTitulo" style="color: #5260F4;"></b>?</h5>
-
-                        </div>
-                        
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
-                            <a type="button" class="btn btn-success" id="applyJob">Confirmar</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        <?php
-        } else if ($sess->has('cnpj')) {
-        ?>
-            $vagas = 
-        <?php
         }
         ?>
     </div>

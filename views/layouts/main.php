@@ -108,6 +108,25 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     ?>
 </header>
 
+<?php 
+    if ($sess->has('toast')) {
+        $toast = $sess->get('toast');
+        $sess->remove('toast');
+?>
+    <div class="position-fixed top-0 end-0 p-3" id="toastDiv" style="z-index: 11; margin-top: 5rem !important;">
+        <div class="toast align-items-center text-white bg-<?= $toast['class'] ?> border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <span><?= $toast['msg'] ?></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+<?php
+    }
+?>
+
 <main id="main" class="flex-shrink-0" role="main">
     <div class="container mt-5">
         <?php if (!empty($this->params['breadcrumbs'])): ?>
