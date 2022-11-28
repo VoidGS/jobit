@@ -43,4 +43,19 @@ class Company extends Model
         }
     }
 
+    public function registerJob($idEmpresa, $titulo, $descricao, $salario, $stacks, $tempoExp, $tipoContrato, $remoto) {
+        Yii::$app->db->createCommand()->insert('public.jobs', [
+            'id_empresa' => $idEmpresa,
+            'titulo' => $titulo,
+            'descricao' => $descricao,
+            'salario' => $salario,
+            'stacks' => $stacks,
+            'tempo_exp' => $tempoExp,
+            'tipo_contrato' => $tipoContrato,
+            'remoto' => $remoto
+        ])->execute();
+
+        return Yii::$app->response->redirect(Url::toRoute('/'));
+    }
+
 }

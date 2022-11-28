@@ -57,7 +57,7 @@ $this->title = 'Registro de usuário';
                                 </div>
 
                                 <div class="col-md-6">
-                                    <?= $form->field($model, 'pretencaoSalarial')->textInput()->label('Pretenção Salarial')->widget($maskClass, [
+                                    <?= $form->field($model, 'pretencaoSalarial')->textInput()->label('Pretenção salarial')->widget($maskClass, [
                                         'clientOptions' => [
                                             'alias' => 'numeric',
                                             'digits' => 0,
@@ -75,21 +75,21 @@ $this->title = 'Registro de usuário';
 
                             <div class="row mb-2">
                                 <div class="col-md-12">
-                                    <?= $form->field($model, 'areaAtuacao')->radioList(['Web', 'Mobile'], $options = ['class' => 'ms-1'])->label('Área de atuação') ?>
+                                    <?= $form->field($model, 'areaAtuacao')->radioList(['1' => 'Web', '2' => 'Mobile'], $options = ['class' => 'ms-1'])->label('Área de atuação') ?>
                                 </div>
                             </div>
                             
                             <div class="row mb-2">
                                 <div class="col-md-12">
                                     <?= $form->field($model, 'stacks')->inline(true)->checkboxList([
-                                        'PHP',
-                                        'Javascript',
-                                        'Typescript',
-                                        'Python',
-                                        'Java',
-                                        'Go',
-                                        'React',
-                                        'Vue'
+                                        '1' => 'PHP',
+                                        '2' => 'Javascript',
+                                        '3' => 'Typescript',
+                                        '4' => 'Python',
+                                        '5' => 'Java',
+                                        '6' => 'Go',
+                                        '7' => 'React',
+                                        '8' => 'Vue'
                                     ]) ?>
                                 </div>
                             </div>
@@ -97,7 +97,7 @@ $this->title = 'Registro de usuário';
                             
                             <div class="row mb-2">
                                 <div class="col-md-12">
-                                    <?= $form->field($model, 'tempoExp')->radioList(['Menos de um ano', 'De 1 a 2 anos', 'De 3 a 4 anos', 'Mais de 5 anos'], $options = ['class' => 'ms-1'])->label('Tempo de experiência profissional') ?>
+                                    <?= $form->field($model, 'tempoExp')->radioList(['1' => 'Menos de um ano', '2' => 'De 1 a 2 anos', '3' => 'De 3 a 4 anos', '4' => 'Mais de 5 anos'], $options = ['class' => 'ms-1'])->label('Tempo de experiência profissional') ?>
                                 </div>
                             </div>
 

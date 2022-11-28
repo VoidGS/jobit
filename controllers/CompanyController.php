@@ -9,6 +9,7 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\CompanyLoginForm;
 use app\models\CompanyRegisterForm;
+use app\models\CompanyRegisterJobForm;
 use app\models\ContactForm;
 
 class CompanyController extends Controller
@@ -86,6 +87,17 @@ class CompanyController extends Controller
 
         return $this->render('register', [
             'model' => $model,
+        ]);
+    }
+
+    public function actionRegisterJob() {
+        $model = new CompanyRegisterJobForm();
+        if ($model->load(Yii::$app->request->post()) && $model->registerJob()) {
+            return $this->goBack();
+        }
+
+        return $this->render('registerJob', [
+            'model' => $model
         ]);
     }
 }

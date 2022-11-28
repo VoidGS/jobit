@@ -32,6 +32,12 @@ $config = [
             // send all mails to a file by default.
             'useFileTransport' => true,
         ],
+        'formatter' => [
+            'dateFormat' => 'dd.MM.yyyy',
+            'decimalSeparator' => ',',
+            'thousandSeparator' => '.',
+            'currencyCode' => 'BRL',
+        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [

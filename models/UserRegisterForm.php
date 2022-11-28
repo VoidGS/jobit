@@ -147,8 +147,6 @@ class UserRegisterForm extends Model {
 
     public function register() {
         if ($this->validate()) {
-            $this->stacks = json_encode($this->stacks);
-            
             return $this->model->register($this->nome, $this->cpf, $this->dataNasc, $this->email, $this->pretencaoSalarial, $this->areaAtuacao, $this->stacks, $this->tempoExp, md5($this->password));
         }
 

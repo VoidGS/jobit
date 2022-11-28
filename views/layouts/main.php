@@ -12,11 +12,10 @@ use yii\bootstrap5\NavBar;
 use yii\helpers\Url;
 
 // Construct
-$currentRoute = Yii::$app->request->url;
 $sess = Yii::$app->session;
+$currentRoute = Yii::$app->request->url;
 
 $optionsArr = [
-    'userType' => '',
     'navItemLabel' => 'undefined',
     'navItemUrl' => '/',
     'profileName' => 'undefined'
@@ -38,21 +37,25 @@ if (!$sess->has('id')) {
         Yii::$app->response->redirect(Url::toRoute('/'));
     } else {
         if ($sess->has('cpf')) {
-            $optionsArr = [
-                'userType' => 'user',
-                'navItemLabel' => '<i class="fa-solid fa-hourglass-end"></i> Candidaturas',
-                'navItemUrl' => '/user/candidaturas',
-                'profileName' => '<i class="fa-solid fa-user"></i> ' . $sess->get('nome'),
-                'vagas' => []
-            ];
+            if (isset(explode('/', $currentRoute)[1]) && explode('/', $currentRoute)[1] == 'company') {
+                Yii::$app->response->redirect(Url::toRoute('/'));
+            } else {
+                $optionsArr = [
+                    'navItemLabel' => '<i class="fa-solid fa-hourglass-end"></i> Candidaturas',
+                    'navItemUrl' => '/user/candidaturas',
+                    'profileName' => '<i class="fa-solid fa-user"></i> ' . $sess->get('nome'),
+                ];
+            }
         } else if ($sess->has('cnpj')) {
-            $optionsArr = [
-                'userType' => 'company',
-                'navItemLabel' => '<i class="fa-solid fa-plus"></i> Cadastrar vaga',
-                'navItemUrl' => '/company/registrar-vaga',
-                'profileName' => '<i class="fa-solid fa-building"></i> ' . $sess->get('razao_social'),
-                'vagas' => []
-            ];
+            if (isset(explode('/', $currentRoute)[1]) && explode('/', $currentRoute)[1] == 'user') {
+                Yii::$app->response->redirect(Url::toRoute('/'));
+            } else {
+                $optionsArr = [
+                    'navItemLabel' => '<i class="fa-solid fa-plus"></i> Cadastrar vaga',
+                    'navItemUrl' => '/company/register-job',
+                    'profileName' => '<i class="fa-solid fa-building"></i> ' . $sess->get('razao_social'),
+                ];
+            }
         } else {
             Yii::$app->response->redirect(Url::toRoute('/site/error'));
         }

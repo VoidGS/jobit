@@ -32,7 +32,7 @@ class User extends Model
     }
 
     public function login($email, $password) {
-        $sql = "SELECT id, nome, cpf, email, data_nasc, area_atuacao, stacks, pretencao_salarial, tempo_exp FROM public.users WHERE email = '{$email}' AND senha = '{$password}'";
+        $sql = "SELECT id, nome, cpf, email, data_nasc, area_atuacao, array_to_json(stacks) as stacks, pretencao_salarial, tempo_exp FROM public.users WHERE email = '{$email}' AND senha = '{$password}'";
 
         $loginData = Yii::$app->db->createCommand($sql)->queryOne();
 
@@ -41,7 +41,7 @@ class User extends Model
 
             $sess->open();
             foreach ($loginData as $k => $v) {
-                $sess->set($k, $v);
+                $sess->set($k, $k == 'stacks' ? json_decode($v, true) : $v);
             }
             return Yii::$app->response->redirect(Url::toRoute('site/home'));
         }

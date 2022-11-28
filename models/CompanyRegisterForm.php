@@ -5,7 +5,6 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use app\models\Company;
-use DateTime;
 
 class CompanyRegisterForm extends Model {
     public $razaoSocial;
@@ -66,7 +65,42 @@ class CompanyRegisterForm extends Model {
      */
     public function validateCnpj($attribute, $params) {
         if (!$this->hasErrors()) {
-            
+            $cnpj = preg_replace('/[^0-9]/', '', (string) $this->cnpj);
+	
+            // Valida tamanho
+            if (strlen($cnpj) != 14)
+                $retorno = false;
+
+            // Verifica se todos os digitos são iguais
+            if (preg_match('/(\d)\1{13}/', $cnpj))
+                $retorno = false;	
+
+            // Valida primeiro dígito verificador
+            for ($i = 0, $j = 5, $soma = 0; $i < 12; $i++)
+            {
+                $soma += $cnpj[$i] * $j;
+                $j = ($j == 2) ? 9 : $j - 1;
+            }
+
+            $resto = $soma % 11;
+
+            if ($cnpj[12] != ($resto < 2 ? 0 : 11 - $resto))
+                $retorno = false;
+
+            // Valida segundo dígito verificador
+            for ($i = 0, $j = 6, $soma = 0; $i < 13; $i++)
+            {
+                $soma += $cnpj[$i] * $j;
+                $j = ($j == 2) ? 9 : $j - 1;
+            }
+
+            $resto = $soma % 11;
+
+            $retorno = $cnpj[13] == ($resto < 2 ? 0 : 11 - $resto);
+
+            if (!$retorno) {
+                $this->addError($attribute, 'CNPJ inválido.');
+            }
         }
     }
 
