@@ -77,7 +77,7 @@ $formatter = Yii::$app->formatter;
                 }
         ?>
                 <div class="col-lg-4 col-md-6 col-sm-12 mt-5">
-                    <div class="card p-3 text-white shadow-lg" style="background-color: #292841; border-radius: 15px;">
+                    <div class="card p-3 text-white shadow-lg h-100" style="background-color: #292841; border-radius: 15px;">
                         <h3 style="color: #5260F4;"><?= $vaga['titulo'] ?></h3>
                         <p class="ms-2 text-muted text-truncate"><i class="fa-solid fa-message"></i> <?= $vaga['descricao'] ?></p>
                         <h5 class="fw-light text-light ms-2 mb-3"><i class="fa-solid fa-globe"></i> <?= $remoto ?></h5>
@@ -92,7 +92,7 @@ $formatter = Yii::$app->formatter;
                             NumberFormatter::MAX_FRACTION_DIGITS => 0,
                         ]) ?></h5>
 
-                        <div class="row mt-2">
+                        <div class="row mt-auto">
                             <div class="col-md-12">
                                 <h5 class=""><span class="badge bg-<?= $classStatusApplication ?>"><?= $textStatusApplication ?></span></h5>
                             </div>

@@ -35,10 +35,9 @@ class Job extends Model
                 j.data_cadastro
             FROM public.jobs j
             INNER JOIN public.stacks s ON s.id = any(j.stacks)
-            LEFT JOIN public.applications a ON a.id_job = j.id
             WHERE 
                 j.status = 1 AND
-                a.id_user NOT IN({$userId})
+                {$userId} NOT IN(SELECT a.id_user FROM public.applications a WHERE a.id_job = j.id)
             GROUP BY j.id";
 
         $retorno = Yii::$app->db->createCommand($sql)->queryAll();
@@ -100,19 +99,24 @@ class Job extends Model
                 j.titulo,
                 j.descricao,
                 j.salario,
-                array_to_json(j.stacks) as id_stacks,
-                json_agg(s.stack) as stacks, 
+                array_to_json(j.stacks) AS id_stacks,
+                json_agg(s.stack) AS stacks, 
                 j.tempo_exp,
                 j.tipo_contrato,
                 j.remoto,
                 j.status,
-                j.data_cadastro
+                j.data_cadastro,
+                COUNT(DISTINCT a.id) as qnt_applications
             FROM public.jobs j
             INNER JOIN public.stacks s ON s.id = any(j.stacks)
+            LEFT JOIN public.applications a ON a.id_job = j.id AND a.status = 1
             WHERE 
                 j.status = 1 AND
                 j.id_empresa = {$companyId}
-            GROUP BY j.id";
+            GROUP BY j.id
+            ORDER BY 
+                qnt_applications desc,
+                j.id asc";
 
         $retorno = Yii::$app->db->createCommand($sql)->queryAll();
 
@@ -156,10 +160,12 @@ class Job extends Model
     }
 
     public function findApplication($jobId) {
+        $userId = $this->sess->get('id');
+
         $sql = "
             SELECT a.id 
             FROM public.applications a 
-            WHERE a.id_job = {$jobId}";
+            WHERE a.id_job = {$jobId} AND a.id_user = {$userId}";
 
         return Yii::$app->db->createCommand($sql)->queryScalar();
     }
@@ -201,6 +207,85 @@ class Job extends Model
         }
 
         return $retorno;
+    }
+
+    public function findJobApplications($jobId) {
+        $sql = "
+            SELECT
+                a.id,
+                u.id as id_user,
+                u.nome,
+                u.email,
+                u.data_nasc,
+                u.area_atuacao,
+                array_to_json(u.stacks) AS id_stacks,
+                json_agg(s.stack) AS stacks,
+                u.pretencao_salarial,
+                u.tempo_exp
+            FROM public.applications a 
+            INNER JOIN public.users u ON u.id = a.id_user 
+            INNER JOIN public.stacks s ON s.id = any(u.stacks)
+            WHERE 
+                a.id_job = {$jobId} AND
+                a.status = 1
+            GROUP BY 
+                a.id,
+                u.id";
+
+        $retorno = Yii::$app->db->createCommand($sql)->queryAll();
+
+        foreach ($retorno as $k => $v) {
+            $retorno[$k]['id_stacks'] = json_decode($retorno[$k]['id_stacks'], true);
+            $retorno[$k]['stacks'] = json_decode($retorno[$k]['stacks'], true);
+        }
+
+        return $retorno;
+    }
+
+    public function acceptApplication($applicationId) {
+        try {
+            Yii::$app->db->createCommand()->update('public.applications', [
+                'status' => '3'
+            ], 'id = ' . $applicationId)->execute();
+
+            $toast = array(
+                'class' => 'success',
+                'msg' => '✔ Candidatura aceita! 🎉'
+            );
+        } catch (\Throwable $th) {
+            //throw $th;
+            $toast = array(
+                'class' => 'danger',
+                'msg' => '❌ Ocorreu um erro.'
+            );
+        }
+
+        $this->sess->set('toast', $toast);
+
+        Yii::$app->response->redirect(Url::toRoute('/'));
+    }
+
+    public function rejectApplication($applicationId) {
+        try {
+            Yii::$app->db->createCommand()->update('public.applications', [
+                'status' => '2'
+            ], 'id = ' . $applicationId)->execute();
+
+            $toast = array(
+                'class' => 'danger',
+                'msg' => '❌ Candidatura rejeitada!'
+            );
+        } catch (\Throwable $th) {
+            //throw $th;
+            $toast = array(
+                'class' => 'danger',
+                'msg' => '❌ Ocorreu um erro.'
+            );
+        }
+
+        $this->sess->set('toast', $toast);
+
+        Yii::$app->response->redirect(Url::toRoute('/'));
     }
 
 }

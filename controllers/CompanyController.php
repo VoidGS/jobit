@@ -11,6 +11,7 @@ use app\models\CompanyLoginForm;
 use app\models\CompanyRegisterForm;
 use app\models\CompanyRegisterJobForm;
 use app\models\ContactForm;
+use app\models\Job;
 
 class CompanyController extends Controller
 {
@@ -90,7 +91,7 @@ class CompanyController extends Controller
         ]);
     }
 
-    public function actionRegisterJob() {
+    public function actionCadastrarVaga() {
         $model = new CompanyRegisterJobForm();
         if ($model->load(Yii::$app->request->post()) && $model->registerJob()) {
             return $this->goBack();
@@ -99,5 +100,21 @@ class CompanyController extends Controller
         return $this->render('registerJob', [
             'model' => $model
         ]);
+    }
+
+    public function actionCandidaturas($jobId) {
+        return $this->render('jobApplications', [
+            'jobId' => $jobId
+        ]);
+    }
+
+    public function actionAcceptApplication($applicationId) {
+        $model = new Job();
+        $model->acceptApplication($applicationId);
+    }
+
+    public function actionRejectApplication($applicationId) {
+        $model = new Job();
+        $model->rejectApplication($applicationId);
     }
 }

@@ -52,7 +52,7 @@ if (!$sess->has('id')) {
             } else {
                 $optionsArr = [
                     'navItemLabel' => '<i class="fa-solid fa-plus"></i> Cadastrar vaga',
-                    'navItemUrl' => '/company/register-job',
+                    'navItemUrl' => '/company/cadastrar-vaga',
                     'profileName' => '<i class="fa-solid fa-building"></i> ' . $sess->get('razao_social'),
                 ];
             }
